@@ -8,11 +8,64 @@ document.addEventListener('mousemove', (event) => {
   glow.style.top = `${event.clientY}px`;
 });
 
-const musicBtn = $('#musicBtn');
-musicBtn?.addEventListener('click', () => {
-  musicBtn.classList.toggle('playing');
-  musicBtn.textContent = musicBtn.classList.contains('playing') ? '♫' : '♪';
+// background music that keeps playing across pages
+const MUSIC_KEY = 'avii-music';
+const song = new Audio('assets/song.mp3');
+song.loop = true;
+
+let musicBtn = $('#musicBtn');
+if (!musicBtn) {
+  musicBtn = document.createElement('button');
+  musicBtn.className = 'music-btn';
+  musicBtn.id = 'musicBtn';
+  document.body.appendChild(musicBtn);
+}
+
+const setMusicUI = (on) => {
+  musicBtn.classList.toggle('playing', on);
+  musicBtn.textContent = on ? '♫' : '♪';
+};
+const readMusic = () => {
+  try { return JSON.parse(sessionStorage.getItem(MUSIC_KEY)) || {}; } catch (e) { return {}; }
+};
+const saveMusic = (playing) => {
+  try {
+    sessionStorage.setItem(MUSIC_KEY, JSON.stringify({ playing, time: song.currentTime }));
+  } catch (e) {}
+};
+
+setMusicUI(false);
+const saved = readMusic();
+if (saved.time) {
+  song.addEventListener('loadedmetadata', () => { song.currentTime = saved.time; }, { once: true });
+}
+if (saved.playing) {
+  song.play().then(() => setMusicUI(true)).catch(() => {
+    // browser blocked autoplay: resume on the first tap anywhere
+    const resume = () => {
+      song.play().then(() => setMusicUI(true)).catch(() => {});
+    };
+    ['pointerdown', 'touchstart', 'click'].forEach((evt) =>
+      document.addEventListener(evt, resume, { once: true })
+    );
+  });
+}
+
+musicBtn.addEventListener('click', (event) => {
+  event.stopPropagation();
+  if (song.paused) {
+    song.play().then(() => {
+      setMusicUI(true);
+      saveMusic(true);
+    }).catch(() => alert('Song not found. Upload assets/song.mp3'));
+  } else {
+    song.pause();
+    setMusicUI(false);
+    saveMusic(false);
+  }
 });
+song.addEventListener('timeupdate', () => { if (!song.paused) saveMusic(true); });
+window.addEventListener('pagehide', () => saveMusic(!song.paused));
 
 const birthdayDate = new Date('2026-10-29T00:00:00').getTime();
 function updateCountdown() {
