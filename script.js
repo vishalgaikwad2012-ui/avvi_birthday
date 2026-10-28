@@ -224,7 +224,7 @@ if (reasonGrid) {
             <h3>${index + 1}</h3>
             <p>tap love note</p>
           </div>
-          <div class="reason-back" style="background-image: linear-gradient(to bottom, rgba(62,50,50,.08), rgba(62,50,50,.18) 45%, rgba(62,50,50,.78)), url('${image}'); background-size: 100% 100%, contain; background-repeat: no-repeat, no-repeat; background-position: center, center; background-color: #2b2230;">
+          <div class="reason-back" style="background-image: linear-gradient(to bottom, rgba(62,50,50,.08), rgba(62,50,50,.18) 45%, rgba(62,50,50,.78)), url('${image}'); --img: url('${image}'); background-color: #2b2230;">
             <p>${reason}</p>
           </div>
         </div>

@@ -1375,3 +1375,64 @@ footer,
   10% { opacity: .85; }
   100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
 }
+
+/* show full photos without cropping */
+.photo,
+.tall .photo,
+.wide .photo {
+  height: 380px !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: #f6eef7 !important;
+}
+.reason-back {
+  background-size: 100% 100%, contain !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-position: center, center !important;
+  background-color: #2b2230 !important;
+}
+
+/* taller reason cards so full photos fit */
+.reason-card {
+  height: 360px !important;
+}
+.reason-back {
+  background-color: #2b2230 !important;
+}
+.reason-back p {
+  background: rgba(43, 34, 48, 0.72);
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 20px !important;
+}
+
+
+/* reason cards: full photo on a soft blurred copy of itself */
+.reason-card {
+  height: 420px !important;
+}
+.reason-back {
+  background-image: none !important;
+  overflow: hidden;
+  isolation: isolate;
+}
+.reason-back::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  background: var(--img) center / cover no-repeat;
+  filter: blur(18px) brightness(0.75);
+  z-index: -2;
+}
+.reason-back::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--img) center / contain no-repeat;
+  z-index: -1;
+}
+.reason-back p {
+  position: relative;
+  z-index: 2;
+}
